@@ -73,6 +73,9 @@ branches = _(branches.output.split('\n'))
 	.compact()
 	.value();
 
+// Add master to the list
+branches.push('master');
+
 // Merge all the found branches
 _.forEach(branches, function(branch, i) {
 	setupBranch(branch);
@@ -82,8 +85,3 @@ _.forEach(branches, function(branch, i) {
 
 	mergeFrom(branches[(i - 1)]);
 });
-
-// Finally, merge into master
-setupBranch('master');
-mergeFrom(_.last(branches));
-
