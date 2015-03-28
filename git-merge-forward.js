@@ -1,16 +1,20 @@
 #!/usr/bin/env node
 
-
 // TODO:
 // - Use 'semver' to handle semantic version sorting after getting branches
 
-
 // Declare common vars
-var shell, _, branches, setupBranch, mergeFrom, silent, output;
+var shell, _, program,
+	branches, setupBranch, mergeFrom, silent, output;
 
 shell = require('shelljs');
 _ = require('lodash');
+program = require('commander');
 
+// Process arguments
+program
+	.version('0.0.1')
+	.parse(process.argv);
 
 // Make sure branch is up to date locally and set stage
 setupBranch = function(branch) {
