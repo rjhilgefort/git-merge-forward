@@ -2,7 +2,6 @@
 
 
 // TODO:
-// - Move to a proper "project" and define a package.json. No more globals
 // - Use 'semver' to handle semantic version sorting after getting branches
 
 
