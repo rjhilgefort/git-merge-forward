@@ -20,6 +20,7 @@ program
 	.option("-b, --branchPrefix [value]", "The branch prefix to target ['release']", 'release')
 	.option("-m, --no-master", "Don't merge changes up through master")
 	.option("-p, --push", "Push changes to remote")
+	.option("-g, --grepTool [value]", "Tool to grep with ['grep']", 'grep')
 	.parse(process.argv);
 
 if (_.isUndefined(program.push)) program.push = false;
@@ -58,12 +59,13 @@ shell.echo(("remote: " + program.remote).magenta);
 shell.echo(("branchPrefix: " + program.branchPrefix).magenta);
 shell.echo(("master: " + program.master).magenta);
 shell.echo(("push: " + program.push).magenta);
+shell.echo(("grepTool: " + program.grepTool).magenta);
 
 // Update remotes
 shell.exec('git fetch');
 
 // Get branches
-branches = shell.exec('git branch -r | ag "' + program.remote + '\/' + program.branchPrefix + '\/"', silent);
+branches = shell.exec('git branch -r | ' + program.grepTool + ' "' + program.remote + '\/' + program.branchPrefix + '\/"', silent);
 if (branches.code !== 0) {
 	shell.echo("No branches found to merge to/with".red);
 	shell.exit(1);
