@@ -14,12 +14,18 @@ program = require('commander');
 // Process arguments
 program
 	.version('0.0.1')
+	.usage("[options]")
+	.option("-r, --remote [value]", "Specify the remote, defaults to 'origin'")
+	.option("-p, --prefix [value]", "Specify the branch prefix to target, defaults to 'release'")
 	.parse(process.argv);
+
+if (!_.isString(program.remote)) program.remote = 'origin';
+if (!_.isString(program.prefix)) program.prefix = 'release';
 
 // Make sure branch is up to date locally and set stage
 setupBranch = function(branch) {
-	shell.echo("\n\n\n" + "==> Processing: " + branch + "\n");
-	shell.exec('git co ' + branch);
+	shell.echo("\n\n" + "==> Processing: " + branch);
+	shell.exec('git checkout ' + branch);
 	shell.exec('git pull');
 };
 
@@ -44,11 +50,15 @@ silent = { silent: true };
 // Start Script
 ///////////////////////////////////////////////////////////////////////////////
 
+shell.echo();
+shell.echo("==> Using remote: " + program.remote);
+shell.echo("==> Using prefix: " + program.prefix);
+
 // Update remotes
 shell.exec('git fetch');
 
 // Get branches
-branches = shell.exec('git branches | ag "remotes\/origin\/release\/"', silent);
+branches = shell.exec('git branch -r | ag "' + program.remote + '\/' + program.prefix + '\/"', silent);
 if (branches.code !== 0) {
 	shell.echo("No branches found to merge to/with");
 	shell.exit(1);
@@ -58,7 +68,7 @@ if (branches.code !== 0) {
 branches = _(branches.output.split('\n'))
 	.chain()
 	.map(function(branch) {
-		return branch.trim().replace('remotes/origin/', '');
+		return branch.trim().replace(program.remote + '/', '');
 	})
 	.compact()
 	.value();
