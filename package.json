@@ -22,6 +22,6 @@
   "dependencies": {
     "commander": "^2.7.1",
     "lodash": "^3.6.0",
-    "shelljs": "^0.4.0"
+    "shelljs": "^0.3.0"
   }
 }
