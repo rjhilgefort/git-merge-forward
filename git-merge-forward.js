@@ -1,10 +1,6 @@
 #!/usr/bin/env node
 
-// TODO:
-// - Use 'semver' to handle semantic version sorting after getting branches
-
-// Declare common vars
-var shell, _, program, colors,
+var shell, _, program, colors, inquirer, semver,
 	branches, setupBranch, mergeFrom, silent, output, proceed;
 
 shell = require('shelljs');
@@ -12,6 +8,7 @@ _ = require('lodash');
 program = require('commander');
 colors = require('colors');
 inquirer = require('inquirer');
+semver = require('semver');
 
 // Process arguments
 program
@@ -80,25 +77,28 @@ if (branches.code !== 0) {
 	shell.exit(1);
 }
 
-// Parse branches
-proceed.choices = _(branches.output.split('\n'))
-	.chain()
-	.compact()
-	.map(function(branch) {
-		return {
-			name: branch.trim().replace(program.remote + '/', ''),
-			checked: true
-		};
-	})
-	.value();
+// Parse and setup branches
+branches = branches.output.split('\n');
+branches = _.compact(branches);
+branches = _.map(branches, function(branch) {
+	return branch.trim().replace(program.remote + '/' + program.branchPrefix + '/', '');
+});
+branches = branches.sort(semver.compare);
+branches = _.map(branches, function(branch) {
+	return {
+		name: program.branchPrefix + '/' + branch,
+		checked: true
+	};
+});
 
 // Add master to the list
-proceed.choices.push({
+branches.push({
 	name: 'master',
 	checked: program.master
 });
 
 // Make sure this is what they want
+proceed.choices = branches;
 shell.echo("\n");
 inquirer.prompt(proceed, function(response) {
 	// Merge desired branches forward
