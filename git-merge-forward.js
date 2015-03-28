@@ -14,14 +14,15 @@ colors = require('colors');
 
 // Process arguments
 program
-	.version('0.0.1')
+	.version('0.0.2')
 	.usage("[options]")
-	.option("-r, --remote [value]", "Specify the remote, defaults to 'origin'")
-	.option("-p, --prefix [value]", "Specify the branch prefix to target, defaults to 'release'")
+	.option("-r, --remote [value]", "The remote ['origin']", 'origin')
+	.option("-b, --branchPrefix [value]", "The branch prefix to target ['release']", 'release')
+	.option("-m, --no-master", "Don't merge changes up through master")
+	.option("-p, --push", "Push changes to remote")
 	.parse(process.argv);
 
-if (!_.isString(program.remote)) program.remote = 'origin';
-if (!_.isString(program.prefix)) program.prefix = 'release';
+if (_.isUndefined(program.push)) program.push = false;
 
 // Make sure branch is up to date locally and set stage
 setupBranch = function(branch) {
@@ -41,7 +42,7 @@ mergeFrom = function(branch) {
 		shell.exec("git commit --no-edit");
 	}
 
-	shell.exec('git push');
+	if (program.push) shell.exec('git push');
 };
 
 // Shortcut
@@ -52,14 +53,17 @@ silent = { silent: true };
 ///////////////////////////////////////////////////////////////////////////////
 
 shell.echo();
-shell.echo(("==> Using remote: " + program.remote).magenta);
-shell.echo(("==> Using prefix: " + program.prefix).magenta);
+shell.echo("==> Settings (run `--help` for info)".underline.green);
+shell.echo(("remote: " + program.remote).magenta);
+shell.echo(("branchPrefix: " + program.branchPrefix).magenta);
+shell.echo(("master: " + program.master).magenta);
+shell.echo(("push: " + program.push).magenta);
 
 // Update remotes
 shell.exec('git fetch');
 
 // Get branches
-branches = shell.exec('git branch -r | ag "' + program.remote + '\/' + program.prefix + '\/"', silent);
+branches = shell.exec('git branch -r | ag "' + program.remote + '\/' + program.branchPrefix + '\/"', silent);
 if (branches.code !== 0) {
 	shell.echo("No branches found to merge to/with".red);
 	shell.exit(1);
@@ -75,7 +79,7 @@ branches = _(branches.output.split('\n'))
 	.value();
 
 // Add master to the list
-branches.push('master');
+if (program.master) branches.push('master');
 
 // Merge all the found branches
 _.forEach(branches, function(branch, i) {
