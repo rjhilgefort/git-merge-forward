@@ -4,12 +4,13 @@
 // - Use 'semver' to handle semantic version sorting after getting branches
 
 // Declare common vars
-var shell, _, program,
+var shell, _, program, colors,
 	branches, setupBranch, mergeFrom, silent, output;
 
 shell = require('shelljs');
 _ = require('lodash');
 program = require('commander');
+colors = require('colors');
 
 // Process arguments
 program
@@ -24,7 +25,7 @@ if (!_.isString(program.prefix)) program.prefix = 'release';
 
 // Make sure branch is up to date locally and set stage
 setupBranch = function(branch) {
-	shell.echo("\n\n" + "==> Processing: " + branch);
+	shell.echo(("\n\n" + "==> Processing: " + branch).underline.green);
 	shell.exec('git checkout ' + branch);
 	shell.exec('git pull');
 };
@@ -51,8 +52,8 @@ silent = { silent: true };
 ///////////////////////////////////////////////////////////////////////////////
 
 shell.echo();
-shell.echo("==> Using remote: " + program.remote);
-shell.echo("==> Using prefix: " + program.prefix);
+shell.echo(("==> Using remote: " + program.remote).magenta);
+shell.echo(("==> Using prefix: " + program.prefix).magenta);
 
 // Update remotes
 shell.exec('git fetch');
@@ -60,7 +61,7 @@ shell.exec('git fetch');
 // Get branches
 branches = shell.exec('git branch -r | ag "' + program.remote + '\/' + program.prefix + '\/"', silent);
 if (branches.code !== 0) {
-	shell.echo("No branches found to merge to/with");
+	shell.echo("No branches found to merge to/with".red);
 	shell.exit(1);
 }
 
