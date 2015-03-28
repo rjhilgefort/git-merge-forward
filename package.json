@@ -1,0 +1,22 @@
+{
+  "name": "git-merge-forward",
+  "version": "1.0.0",
+  "description": "Merge chronologically separated branches forward to 'master'",
+  "main": "git-merge-forward.js",
+  "scripts": {
+    "test": "echo 'Error: no test specified' && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:rjhilgefort/git-merge-forward.git"
+  },
+  "keywords": [
+    "git"
+  ],
+  "author": "@rjhilgefort",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rjhilgefort/git-merge-forward/issues"
+  },
+  "homepage": "https://github.com/rjhilgefort/git-merge-forward"
+}
