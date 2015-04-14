@@ -41,7 +41,7 @@ mergeFrom = function(branch) {
 		shell.exec("git commit --no-edit");
 	}
 
-	if (program.push) shell.exec('git push');
+	if (program.push) shell.exec('git push --no-verify');
 };
 
 // Shortcut
