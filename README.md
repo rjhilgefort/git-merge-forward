@@ -3,8 +3,8 @@ Git Merge Forward
 
 Merge chronologically separated branches forward to 'master'
 
-![Setup](http://192.241.245.99/img/git-merge-forward-prompt.png)
-![Running](http://192.241.245.99/img/git-merge-forward-complete.png)
+![Setup](http://hilgefort.me/content/images/git-merge-forward-prompt.png)
+![Running](http://hilgefort.me/content/images/git-merge-forward-complete.png)
 
 Usage
 -----
